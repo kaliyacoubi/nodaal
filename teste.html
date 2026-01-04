@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Animation blur élément</title>
+  <style>
+    .blur-animate {
+      filter: blur(8px);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: blurFadeIn 0.6s ease-out forwards;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes blurFadeIn {
+      to {
+        filter: blur(0);
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body style="display:flex; flex-direction: column; gap: 20px; justify-content: center; align-items: center; height: 100vh;">
+
+  <h1 class="blur-animate" style="--delay: 0s;">Titre animé</h1>
+  <button class="blur-animate" style="--delay: 0.3s;">Clique-moi</button>
+  <img class="blur-animate" style="--delay: 0.6s;" src="https://via.placeholder.com/150" alt="Exemple image" />
+
+</body>
+</html>

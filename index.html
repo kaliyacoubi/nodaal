@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nodaal</title>
+  <meta name="description" content="Nodaal: Créons notre lien – Application, Sites, Refontes" />
+    <link rel="icon" type="image/ico" href="favicon.ico">
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* Animation blur + apparition */
+    .blur-animate {
+      filter: blur(8px);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: blurFadeIn 0.6s ease-out forwards;
+      animation-play-state: paused; /* Démarre en pause, JS va lancer */
+    }
+
+    @keyframes blurFadeIn {
+      to {
+        filter: blur(0);
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="center-div">
+
+    <!-- Header / Menu -->
+    <header class="menue-div">
+      <div class="menue">
+        <div class="time">
+          <img id="drapeau" src="" alt="Drapeau" width="32" height="20" />
+          <span id="heure"></span>
+        </div>
+
+        <div class="logo">
+          <img src="img/logo-nodaal.png" alt="Logo Nodaal" />
+        </div>
+        <div class="contact">
+            <a href="https://wa.me/33769290963" target="_blank" rel="noopener">
+                          <button aria-label="Contactez Nodaal">Contact</button>
+
+            </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Text -->
+    <main class="text-div">
+      <h1>Créons notre lien</h1>
+      <h3>Application. Sites. Refontes</h3>
+        <a href="https://wa.me/33769290963" target="_blank" rel="noopener"><button>Lancez votre projet</button></a>
+
+      
+    </main>
+
+    <!-- Logos et lien -->
+    <section class="link-div">
+      <div class="link">
+        <div class="logo-link">
+
+            <!-- Gmail -->
+            <div class="logo-reseau">
+                <a href="mailto:contact.nodaal@gmail.com">
+                <img src="img/logo-gmail.png" alt="Gmail" loading="lazy" />
+                </a>
+            </div>
+
+            <!-- TikTok -->
+            <div class="logo-reseau">
+                <a href="https://www.tiktok.com/@nodaal8" target="_blank" rel="noopener">
+                <img src="img/logo-tiktok.png" alt="TikTok" loading="lazy" />
+                </a>
+            </div>
+
+            <!-- Instagram -->
+            <div class="logo-reseau">
+                <a href="https://www.instagram.com/nodaal8" target="_blank" rel="noopener">
+                <img src="img/logo-insta.png" alt="Instagram" loading="lazy" />
+                </a>
+            </div>
+
+        </div>
+
+        <div class="word">nodaal.</div>
+        <p>tout commence ici</p>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Mise à jour de l'heure
+     function updateHeure() {
+    const heureSpan = document.getElementById("heure");
+    const now = new Date();
+    const heures = String(now.getHours()).padStart(2, "0");
+    const minutes = String(now.getMinutes()).padStart(2, "0");
+    heureSpan.textContent = `${heures}:${minutes}`;
+  }
+  updateHeure();
+  setInterval(updateHeure, 60000);
+
+  // Récupérer le pays via IP avec ipwhois.io
+  fetch("https://ipwhois.app/json/")
+    .then(res => res.json())
+    .then(data => {
+      const drapeau = document.getElementById("drapeau");
+
+      if (data && data.country_code) {
+        // Mettre l'image du drapeau avec fade-in
+        drapeau.style.opacity = 0;
+        drapeau.src = `https://flagcdn.com/w40/${data.country_code.toLowerCase()}.png`;
+        drapeau.alt = data.country + " drapeau";
+
+        // Animation fade-in
+        drapeau.style.transition = "opacity 0.6s ease-in";
+        setTimeout(() => { drapeau.style.opacity = 1; }, 50);
+      } else {
+        // Fallback si country_code absent
+        drapeau.src = "img/default-flag.png";
+        drapeau.alt = "Drapeau inconnu";
+        drapeau.style.opacity = 1;
+      }
+    })
+    .catch(err => {
+      console.log("Impossible de récupérer le pays:", err);
+      const drapeau = document.getElementById("drapeau");
+      drapeau.src = "img/default-flag.png";
+      drapeau.alt = "Drapeau inconnu";
+      drapeau.style.opacity = 1;
+    });
+    // Sélectionne tous les enfants directs de .center-div (les gros blocs de la page)
+    const elements = document.querySelectorAll(".center-div > *");
+
+    // Ajoute la classe d'animation et lance avec délai en cascade
+    elements.forEach((el, i) => {
+      el.classList.add("blur-animate");
+      el.style.animationDelay = (i * 0.3) + "s";
+    });
+
+    // Observer pour lancer l'animation quand l'élément est visible
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = "running";
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    elements.forEach(el => {
+      el.style.animationPlayState = "paused"; // reset
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
